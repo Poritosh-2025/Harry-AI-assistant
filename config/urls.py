@@ -7,7 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     # API Routes
-    path('api/auth/', include('apps.accounts.urls')),
+    path('api/', include('apps.accounts.urls')),
     path('api/profile/', include('apps.profiles.urls')),
     path('api/admin/', include('apps.admin_panel.urls')),
     path('api/admin/api-keys/', include('apps.api_keys.urls')),
