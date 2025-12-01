@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.utils import timezone
 from django.conf import settings
 
-
+# Custom User Manager
 class UserManager(BaseUserManager):
     """Custom user manager"""
     
