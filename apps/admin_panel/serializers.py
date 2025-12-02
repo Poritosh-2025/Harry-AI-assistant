@@ -28,7 +28,7 @@ class CreateStaffAdminSerializer(serializers.Serializer):
 
 class AdminListSerializer(serializers.ModelSerializer):
     """Admin list serializer"""
-    
+    admin_id = serializers.UUIDField(source='id', read_only=True)
     admin_sl_no = serializers.SerializerMethodField()
     admin_name = serializers.CharField(source='full_name')
     admin_email = serializers.EmailField(source='email')
@@ -38,7 +38,7 @@ class AdminListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['admin_sl_no', 'admin_name', 'admin_email', 'admin_contact_number', 
+        fields = ['admin_id', 'admin_sl_no', 'admin_name', 'admin_email', 'admin_contact_number', 
                   'has_access_to', 'is_active', 'actions']
     
     def get_admin_sl_no(self, obj):
@@ -57,6 +57,7 @@ class AdminListSerializer(serializers.ModelSerializer):
 class UserListSerializer(serializers.ModelSerializer):
     """User list serializer"""
     
+    user_id = serializers.UUIDField(source='id', read_only=True)
     user_sl_no = serializers.SerializerMethodField()
     user_full_name = serializers.CharField(source='full_name')
     user_email = serializers.EmailField(source='email')
@@ -65,7 +66,7 @@ class UserListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['user_sl_no', 'user_full_name', 'user_email', 'user_phone_number', 
+        fields = ['user_id', 'user_sl_no', 'user_full_name', 'user_email', 'user_phone_number', 
                   'is_active', 'actions']
     
     def get_user_sl_no(self, obj):
