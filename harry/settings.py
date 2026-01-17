@@ -18,7 +18,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='django-insecure-change-this-i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1, 10.10.7.22', cast=Csv())
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='localhost,127.0.0.1, 10.10.7.22', cast=Csv())
 
 # Application definition
 INSTALLED_APPS = [
@@ -165,20 +165,20 @@ CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:
 CORS_ALLOW_CREDENTIALS = True
 
 # Email Settings
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='poritoshpal98@gmail.com')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='cdjr oxby fnat wyog')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='poritoshpal98@gmail.com')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = os.getenv('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', default='poritoshpal98@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', default='cdjr oxby fnat wyog')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', default='poritoshpal98@gmail.com')
 
 # Redis Configuration
-REDIS_URL = config('REDIS_URL', default='redis://localhost:6379/0')
+REDIS_URL = os.getenv('REDIS_URL', default='redis://localhost:6379/0')
 
 # Celery Settings
-CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
