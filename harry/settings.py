@@ -18,7 +18,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', default='django-insecure-change-this-i
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'harryapi.dsrt321.online,localhost,127.0.0.1').split(',')
 
 # Application definition
 INSTALLED_APPS = [
