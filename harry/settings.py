@@ -20,6 +20,9 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'harryapi.dsrt321.online,localhost,127.0.0.1').split(',')
 
+# CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.getenv('CSRF_TRUSTED_ORIGINS', 'https://harryapi.dsrt321.online,http://localhost:8000').split(',') if origin.strip()]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
