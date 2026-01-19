@@ -27,7 +27,7 @@ class DashboardStatsView(APIView):
         
         # Today's unique chat users
         todays_chat_users = ChatSession.objects.filter(
-            session_date=today
+            created_at__date=today
         ).values('user').distinct().count()
         
         # Admin info
@@ -75,9 +75,9 @@ class MonthlyGrowthView(APIView):
         
         # Get monthly data
         monthly_data = ChatSession.objects.filter(
-            session_date__year=year
+            created_at__year=year
         ).annotate(
-            month=TruncMonth('session_date')
+            month=TruncMonth('created_at')
         ).values('month').annotate(
             new_users=Count('user', distinct=True)
         ).order_by('month')
@@ -166,10 +166,10 @@ class YearlyGrowthView(APIView):
         
         # Get yearly data
         yearly_data = ChatSession.objects.filter(
-            session_date__year__gte=start_year,
-            session_date__year__lte=end_year
+            created_at__year__gte=start_year,
+            created_at__year__lte=end_year
         ).annotate(
-            year=TruncYear('session_date')
+            year=TruncYear('created_at')
         ).values('year').annotate(
             new_users=Count('user', distinct=True)
         ).order_by('year')
