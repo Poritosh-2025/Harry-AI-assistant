@@ -27,9 +27,18 @@ class RegisterSerializer(serializers.Serializer):
     re_type_password = serializers.CharField(write_only=True)
     
     def validate_email(self, value):
-        if User.objects.filter(email=value.lower()).exists():
-            raise serializers.ValidationError("User with this email already exists.")
-        return value.lower()
+        email = value.lower()
+        existing_user = User.objects.filter(email=email).first()
+        
+        if existing_user:
+            # Only block if the user is verified
+            if existing_user.is_verified:
+                raise serializers.ValidationError("User with this email already exists.")
+            # If user exists but is NOT verified, we'll handle it in the view
+            # Store the existing user for later use in create()
+            self._existing_unverified_user = existing_user
+        
+        return email
     
     def validate(self, data):
         if data['password'] != data['re_type_password']:
@@ -43,6 +52,23 @@ class RegisterSerializer(serializers.Serializer):
     
     def create(self, validated_data):
         validated_data.pop('re_type_password')
+        
+        # Check if there's an existing unverified user
+        existing_user = getattr(self, '_existing_unverified_user', None)
+        
+        if existing_user:
+            # Update the existing unverified user instead of creating a new one
+            existing_user.full_name = validated_data['full_name']
+            existing_user.mobile_number = validated_data.get('mobile_number', '')
+            existing_user.set_password(validated_data['password'])
+            existing_user.save()
+            
+            # Delete any old OTPs for this user
+            OTP.objects.filter(user=existing_user).delete()
+            
+            return existing_user
+        
+        # Create new user if no existing unverified user
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],
@@ -58,6 +84,24 @@ class SuperAdminRegisterSerializer(RegisterSerializer):
     
     def create(self, validated_data):
         validated_data.pop('re_type_password')
+        
+        # Check if there's an existing unverified user
+        existing_user = getattr(self, '_existing_unverified_user', None)
+        
+        if existing_user:
+            # Update the existing unverified user to super admin
+            existing_user.full_name = validated_data['full_name']
+            existing_user.mobile_number = validated_data.get('mobile_number', '')
+            existing_user.set_password(validated_data['password'])
+            existing_user.role = UserRole.SUPER_ADMIN
+            existing_user.save()
+            
+            # Delete any old OTPs for this user
+            OTP.objects.filter(user=existing_user).delete()
+            
+            return existing_user
+        
+        # Create new super admin user
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],

@@ -40,8 +40,8 @@ class RegisterSuperAdminView(APIView):
     def post(self, request):
         from .tasks import send_otp_email
         
-        # Check if super admin already exists
-        if User.objects.filter(role='SUPER_ADMIN').exists():
+        # Check if a verified super admin already exists
+        if User.objects.filter(role='SUPER_ADMIN', is_verified=True).exists():
             return api_response(
                 False, 'Super Admin already exists',
                 status_code=status.HTTP_400_BAD_REQUEST
@@ -92,9 +92,18 @@ class RegisterView(APIView):
         OTP.objects.create(user=user, otp_code=otp_code, otp_type=OTPType.registration)
         send_email_task(send_otp_email, user.email, otp_code, OTPType.registration)
         
+        # Check if this was a re-registration (existing unverified user)
+        was_reregistration = hasattr(serializer, '_existing_unverified_user')
+        
+        message = (
+            'Account details updated. Please check your email for a new OTP verification code.'
+            if was_reregistration
+            else 'User registered successfully. Please check your email for OTP verification.'
+        )
+        
         return api_response(
             True,
-            'User registered successfully. Please check your email for OTP verification.',
+            message,
             data={'user': UserSerializer(user).data},
             status_code=status.HTTP_201_CREATED
         )
